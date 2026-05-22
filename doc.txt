@@ -144,3 +144,5 @@ AHORA DEBEMOS IMPORTAR EL EL DatabaseModule
     providers: [],
     })
     export class AppModule {}
+AHORA DEBEMOS PROBAR LA CONEXION A NUESTRA BASE DE DATOS
+ 
