@@ -1,0 +1,146 @@
+creacion de proyecto
+    npm new backend-nest
+Iniciar el proyecto
+    npm run start:dev
+en la carpeta raiz crear un archivo .env
+   agregar PORT=3005
+instalar servicios para usar los .env
+    npm i --save @nestjs/config
+agregar las sigueintes lineas de codigo en app.modules.ts
+    imports: [
+    ConfigModule.forRoot({
+      isGlobal:true
+    })
+  ],
+Configurar las URL base QUE SE USARAN
+    const app = await NestFactory.create(AppModule);
+    app.setGlobalPrefix('api')
+
+CREAMOS LA ESTRUCTURA DE CARPETAS
+    database
+    modules
+        usuarios
+DENTRO DE LA CARPETA USAURIOS CREAMOS LOS SIGUINTES ARCHIVOS
+    usuarios.controller.ts
+    // creamos lo sigueintes
+
+    import { Controller, Get } from "@nestjs/common";
+    @Controller('usuarios')
+
+    export class UsuariosController{
+        @Get('listar')
+        funListar(){
+
+        }
+    }
+    usuarios.module.ts
+    //INGRESAMOS LOS sigueintes
+
+        import { Module } from "@nestjs/common";
+        @Module({
+            controllers:[],
+            providers:[]
+        })
+
+        export class UsuariosModules{
+
+        }
+    usuarios.services.ts
+    //
+    import { Injectable } from "@nestjs/common";
+    @Injectable()
+    export class UsuariosService{
+        
+    }
+en el app.module.ts se deben importar el modulo quer se ha creado en este caso
+    UsuariosModules
+En el archivo usuarios.module, tambien se debe importar el controlador y el services
+    // asi debe quedar
+    @Module({
+        controllers:[UsuariosController],
+        providers:[UsuariosService]
+    })
+EN USUARIOS SERVICES
+SE DEBE AGREGAR LOS METODOS O FUNCIONES
+//EJEMPLO
+    ListarUsuarios(){
+        return ["Usuario 1", "Usuario 2"];
+    }return ["Usuario 1", "Usuario 2"];
+
+EN EL CONTROLADOR SE DE IMPORTAR LOS SERVICIOS en el controlador
+//EJEMPLO de como debe quedar el controlador
+    import { Controller, Get } from "@nestjs/common";
+    import { UsuariosService } from "./usuarios.services";
+
+    //ruta: http:localhost:3005/api/usuarios/listar
+    @Controller('usuarios')
+    export class UsuariosController{
+        constructor(
+            private usuariosServicio:UsuariosService
+        ){}
+        @Get('listar')
+        funListar(){
+            return this.usuariosServicio.ListarUsuarios();
+        }
+    }
+===========================================================
+CREACION DE MODULOS POR LINEA DE COMANDOS
+//CREAR EL MODULO
+    nest g mo modules/persona
+//CONTROLADOR
+    nest g co modules/persona --no-spec
+//SERVICIO
+    nes g s modules/persona --no-spec
+=============================================================
+CREAMOS LA CONEXION A BASE DE DATOS
+//CREAMOS UN MODULO DENTRO DE LA CARPETA database
+    database.module.ts
+//agregamos el sigueintes codigo
+    import { Global, Module } from "@nestjs/common";
+    import {Pool} from 'pg';
+
+    @Global()
+
+    @Module({
+        providers:[
+            {
+                provide:'PG_POOL1',
+                useFactory:()=>{
+                    return new Pool({
+                        host: process.env.DB_HOST,
+                        port: Number(process.env.DB_PORT),
+                        user: process.env.DB_USER,
+                        password: process.env.DB_PASSWORD,
+                        database:process.env.DB_DATABASE
+                    })
+                }
+            }
+        ],
+        exports: ['PG_POOL1']
+    })
+
+    export class DatabaseModule{}
+AHORA INSTALAMOS PG
+//
+    npm install pg
+AHORA DEBEMOS IMPORTAR EL EL DatabaseModule
+// Asi deberi ir quedando el app.module.ts
+
+    import { Module } from '@nestjs/common';
+    import { ConfigModule } from '@nestjs/config';
+    import { UsuariosModules } from './modules/usuarios/usuarios.module';
+    import { DatabaseModule } from './database/database.module';
+
+
+    @Module({
+    imports: [
+        DatabaseModule,
+        ConfigModule.forRoot({
+        isGlobal:true
+        }),
+        UsuariosModules
+    ],
+    controllers: [],
+    providers: [],
+    })
+    export class AppModule {}
