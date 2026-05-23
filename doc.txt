@@ -145,4 +145,36 @@ AHORA DEBEMOS IMPORTAR EL EL DatabaseModule
     })
     export class AppModule {}
 AHORA DEBEMOS PROBAR LA CONEXION A NUESTRA BASE DE DATOS
- 
+
+
+ =================CREACION DE MODULO MAPA==========================================
+nest g mo modules/mapa --no-spec    //modulo
+nest g co modules/mapa --no-spec    //controlador
+nest g s modules/mapa --no-spec    //SERVICIO
+=================================================================================
+CODIFICANDO CADA MODULO
+1.- PRIMERO COMENZAMOS importando los servicios en el controlador
+export class MapaController {
+    constructor(
+        private readonly mapaServicio:MapaService
+    ){}
+    //Listar los departamentos
+}
+2.- Crear una funcion o metodo, en este caso vamos a listar los departamentos
+import { Controller, Get } from '@nestjs/common';
+import { MapaService } from './mapa.service';
+
+@Controller('mapa')
+export class MapaController {
+    constructor(
+        private readonly mapaServicio:MapaService
+    ){}
+    //Listar los departamentos
+    @Get('listar')
+    funListarMapa(){
+        
+    }
+}
+3.- CREAR EL SERVICIO, ACA ES DONDE SE REALIZA LA LLAMADA A LA BASE DE DATOS
+
+

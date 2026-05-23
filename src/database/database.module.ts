@@ -10,6 +10,7 @@ import {Pool} from 'pg';
             provide:'PG_POOL1',
             useFactory:()=>{
                 return new Pool({
+                    type: 'postgres',
                     host: process.env.DB_HOST,
                     port: Number(process.env.DB_PORT),
                     user: process.env.DB_USER,
